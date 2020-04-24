@@ -345,6 +345,20 @@ end
 
 local base_install_dir = M.path.join(fn.stdpath("cache"), "nvim_lsp")
 M.base_install_dir = base_install_dir
+
+local npm_is_global = nil
+local function util_system(cmd, strip)
+  local code, output
+  strip = strip==nil and true or strip
+
+  code, output = vim._system(cmd)
+  if code==0 then
+    output = strip and vim.trim(output) or output
+    return output
+  end
+  return nil
+end
+
 function M.npm_installer(config)
   validate {
     server_name = {config.server_name, 's'};
@@ -355,6 +369,13 @@ function M.npm_installer(config)
 
   local install_dir = M.path.join(base_install_dir, config.server_name)
   local bin_dir = M.path.join(install_dir, "node_modules", ".bin")
+
+  npm_is_global = npm_is_global~=nil or util_system('npm config get global')=='true'
+  if npm_is_global then
+    install_dir = util_system('npm prefix')
+    bin_dir = util_system('npm bin')
+  end
+
   local function bin_path(name)
     return M.path.join(bin_dir, name)
   end
