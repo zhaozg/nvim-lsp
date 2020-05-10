@@ -2,6 +2,8 @@
 
 Collection of common configurations for the [Nvim LSP client](https://neovim.io/doc/user/lsp.html).
 
+**Note:** `nvim-lsp` is unrelated to [vim-lsp](https://github.com/prabirshrestha/vim-lsp).
+
 It is hoped that these configurations serve as a "source of truth", but they
 are strictly _best effort_. If something doesn't work, these configs are useful
 as a starting point, which you can adjust to fit your environment.
@@ -40,7 +42,7 @@ Each config provides a `setup()` function, to initialize the server with
 reasonable defaults and some server-specific things like commands or different
 diagnostics.
 
-    vim.cmd('packadd nvim-lsp')
+    vim.cmd('packadd nvim-lsp')  -- If installed as a Vim "package".
     require'nvim_lsp'.<config>.setup{name=…, settings = {…}, …}
 
 Find the [config](#configurations) for your language, then paste the example
@@ -55,7 +57,7 @@ config provides `nvim_lsp.texlab.buf_build({bufnr})`.
 To use the defaults, just call `setup()` with an empty `config` parameter.
 For the `gopls` config, that would be:
 
-    vim.cmd('packadd nvim-lsp')
+    vim.cmd('packadd nvim-lsp')  -- If installed as a Vim "package".
     require'nvim_lsp'.gopls.setup{}
 
 ### Example: override some defaults
@@ -1957,8 +1959,10 @@ require'nvim_lsp'.html.setup{}
         },
         typeDefinition = {
           linkSupport = true
-        },
-        workspaceSymbol = {
+        }
+      },
+      workspace = {
+        symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
           symbolKind = {
@@ -2111,8 +2115,10 @@ require'nvim_lsp'.jsonls.setup{}
         },
         typeDefinition = {
           linkSupport = true
-        },
-        workspaceSymbol = {
+        }
+      },
+      workspace = {
+        symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
           symbolKind = {
@@ -2442,7 +2448,7 @@ This server accepts configuration via the `settings` key.
 
   Default: `"lean"`
   
-  Path to the Lean executable to use.
+  Path to the Lean executable to use. DO NOT CHANGE from the default `lean` unless you know what you're doing!
 
 - **`lean.extraOptions`**: `array`
 
@@ -2526,7 +2532,7 @@ This server accepts configuration via the `settings` key.
 
   Default: `"leanpkg"`
   
-  Path to the leanpkg executable to use.
+  Path to the leanpkg executable to use. DO NOT CHANGE from the default `leanpkg` unless you know what you're doing!
 
 - **`lean.memoryLimit`**: `number`
 
@@ -2630,12 +2636,10 @@ This server accepts configuration via the `settings` key.
 
 - **`metals.serverVersion`**: `string`
 
-  Default: `"0.8.4"`
+  Default: `"0.9.0"`
 
 - **`metals.superMethodLensesEnabled`**: `boolean`
 
-  Default: `true`
-  
   Enable/disable goto super method code lens.
 
 </details>
@@ -2648,21 +2652,9 @@ require'nvim_lsp'.metals.setup{}
     filetypes = { "scala" }
     init_options = {
       compilerOptions = {
-        isCompletionItemDetailEnabled = true,
-        isCompletionItemDocumentationEnabled = true,
-        isCompletionItemResolve = true,
-        isHoverDocumentationEnabled = true,
-        isSignatureHelpDocumentationEnabled = true,
         snippetAutoIndent = false
       },
-      didFocusProvider = false,
-      doctorProvider = "html",
-      executeClientCommandProvider = false,
-      inputBoxProvider = false,
-      isExitOnShutdown = false,
       isHttpEnabled = true,
-      quickPickProvider = false,
-      slowTaskProvider = false,
       statusBarProvider = "show-message"
     }
     message_level = 4
@@ -3032,8 +3024,10 @@ require'nvim_lsp'.purescriptls.setup{}
         },
         typeDefinition = {
           linkSupport = true
-        },
-        workspaceSymbol = {
+        }
+      },
+      workspace = {
+        symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
           symbolKind = {
@@ -3641,6 +3635,16 @@ This server accepts configuration via the `settings` key.
 
   
 
+- **`rust-analyzer.cargo.target`**: `null|string`
+
+  Default: `vim.NIL`
+  
+  Specify the compilation target
+
+- **`rust-analyzer.checkOnSave.allFeatures`**: `boolean`
+
+  Default: `true`
+
 - **`rust-analyzer.checkOnSave.allTargets`**: `boolean`
 
   Default: `true`
@@ -3852,8 +3856,10 @@ require'nvim_lsp'.rust_analyzer.setup{}
         },
         typeDefinition = {
           linkSupport = true
-        },
-        workspaceSymbol = {
+        }
+      },
+      workspace = {
+        symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
           symbolKind = {
@@ -4716,8 +4722,10 @@ require'nvim_lsp'.yamlls.setup{}
         },
         typeDefinition = {
           linkSupport = true
-        },
-        workspaceSymbol = {
+        }
+      },
+      workspace = {
+        symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
           symbolKind = {
