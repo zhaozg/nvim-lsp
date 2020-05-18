@@ -252,6 +252,7 @@ that config.
 - [pyls](#pyls)
 - [pyls_ms](#pyls_ms)
 - [rls](#rls)
+- [rnix](#rnix)
 - [rust_analyzer](#rust_analyzer)
 - [solargraph](#solargraph)
 - [sourcekit](#sourcekit)
@@ -721,10 +722,8 @@ This server accepts configuration via the `settings` key.
 require'nvim_lsp'.ccls.setup{}
 
   Default Values:
-    capabilities = default capabilities, with offsetEncoding utf-8
     cmd = { "ccls" }
     filetypes = { "c", "cpp", "objc", "objcpp" }
-    on_init = function to handle changing offsetEncoding
     root_dir = root_pattern("compile_commands.json", "compile_flags.txt", ".git")
 ```
 
@@ -835,10 +834,8 @@ Can be installed in Nvim with `:LspInstall cssls`
 require'nvim_lsp'.cssls.setup{}
 
   Default Values:
-    capabilities = default capabilities, with offsetEncoding utf-8
     cmd = { "css-languageserver", "--stdio" }
     filetypes = { "css", "scss", "less" }
-    on_init = function to handle changing offsetEncoding
     root_dir = root_pattern("package.json")
     settings = {
       css = {
@@ -1474,7 +1471,6 @@ This server accepts configuration via the `settings` key.
 require'nvim_lsp'.elmls.setup{}
 
   Default Values:
-    capabilities = default capabilities, with offsetEncoding utf-8
     cmd = { "elm-language-server" }
     filetypes = { "elm" }
     init_options = {
@@ -1483,7 +1479,6 @@ require'nvim_lsp'.elmls.setup{}
       elmPath = "elm",
       elmTestPath = "elm-test"
     }
-    on_init = function to handle changing offsetEncoding
     root_dir = root_pattern("elm.json")
 ```
 
@@ -1954,6 +1949,7 @@ require'nvim_lsp'.html.setup{}
         }
       },
       workspace = {
+        applyEdit = true,
         symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
@@ -1992,10 +1988,8 @@ Can be installed in Nvim with `:LspInstall intelephense`
 require'nvim_lsp'.intelephense.setup{}
 
   Default Values:
-    capabilities = default capabilities, with offsetEncoding utf-8
     cmd = { "intelephense", "--stdio" }
     filetypes = { "php" }
-    on_init = function to handle changing offsetEncoding
     root_dir = root_pattern("composer.json", ".git")
 ```
 
@@ -2116,6 +2110,7 @@ require'nvim_lsp'.jsonls.setup{}
         }
       },
       workspace = {
+        applyEdit = true,
         symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
@@ -2241,19 +2236,27 @@ This server accepts configuration via the `settings` key.
 
 - **`julia.lint.call`**: `boolean`
 
-  Check calls against existing methods. (experimental)
+  Default: `true`
+  
+  This compares  call signatures against all known methods for the called function. Calls with too many or too few arguments, or unknown keyword parameters are highlighted.
 
 - **`julia.lint.constif`**: `boolean`
 
   Default: `true`
   
-  Check for constant conditionals of if statements.
+  Check for constant conditionals in if statements that result in branches never being reached..
+
+- **`julia.lint.datadecl`**: `boolean`
+
+  Default: `true`
+  
+  Check variables used in type declarations are datatypes.
 
 - **`julia.lint.iter`**: `boolean`
 
   Default: `true`
   
-  Check iterator syntax of loops.
+  Check iterator syntax of loops. Will identify, for example, attempts to iterate over single values.
 
 - **`julia.lint.lazy`**: `boolean`
 
@@ -2261,23 +2264,29 @@ This server accepts configuration via the `settings` key.
   
   Check for deterministic lazy boolean operators.
 
-- **`julia.lint.missingrefs`**: `boolean`
+- **`julia.lint.missingrefs`**: `enum { "none", "symbols", "all" }`
 
-  Default: `true`
+  Default: `"all"`
   
-  Report possibly missing references.
+  Highlight unknown symbols. The `symbols` option will not mark unknown fields.
 
 - **`julia.lint.modname`**: `boolean`
 
   Default: `true`
   
-  Check for invalid submodule names.
+  Check submodule names do not shadow their parent's name.
+
+- **`julia.lint.nothingcomp`**: `boolean`
+
+  Default: `true`
+  
+  Check for use of `==` rather than `===` when comparing against `nothing`. 
 
 - **`julia.lint.pirates`**: `boolean`
 
   Default: `true`
   
-  Check for type piracy.
+  Check for type piracy - the overloading of external functions with methods specified for external datatypes. 'External' here refers to imported code.
 
 - **`julia.lint.run`**: `boolean`
 
@@ -2289,7 +2298,13 @@ This server accepts configuration via the `settings` key.
 
   Default: `true`
   
-  Check for unused DataType parameters.
+  Check parameters declared in `where` statements or datatype declarations are used.
+
+- **`julia.lint.useoffuncargs`**: `boolean`
+
+  Default: `true`
+  
+  Check that all declared arguments are used within the function body.
 
 - **`julia.trace.server`**: `enum { "off", "messages", "verbose" }`
 
@@ -3025,6 +3040,7 @@ require'nvim_lsp'.purescriptls.setup{}
         }
       },
       workspace = {
+        applyEdit = true,
         symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
@@ -3080,6 +3096,10 @@ This server accepts configuration via the `settings` key.
   Default: `true`
   
   Enable or disable the plugin.
+
+- **`pyls.plugins.jedi_completion.fuzzy`**: `boolean`
+
+  Enable fuzzy when requesting autocomplete.
 
 - **`pyls.plugins.jedi_completion.include_params`**: `boolean`
 
@@ -3332,6 +3352,14 @@ Requires [.NET Core](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-i
 curl -L https://dot.net/v1/dotnet-install.sh | sh
 ```
 
+`python-language-server` can be installed via `:LspInstall pyls_ms` or you can [build](https://github.com/microsoft/python-language-server/blob/master/CONTRIBUTING.md#setup) your own.
+
+If you want to use your own build, set cmd to point to `Microsoft.Python.languageServer.dll`.
+
+```lua
+cmd = { "dotnet", "exec", "path/to/Microsoft.Python.languageServer.dll" };
+```
+
 This server accepts configuration via the `settings` key.
 
     
@@ -3405,6 +3433,12 @@ This server accepts configuration via the `settings` key.
   Default: `vim.NIL`
   
   Allow multiple projects in the same folder, along with removing the constraint that the cargo.toml must be located at the root. (Experimental: might not work for certain setups)
+
+- **`rust-client.engine`**: `enum { "rls", "rust-analyzer" }`
+
+  Default: `"rls"`
+  
+  The underlying LSP server used to provide IDE support for Rust projects.
 
 - **`rust-client.logToFile`**: `boolean`
 
@@ -3527,6 +3561,24 @@ This server accepts configuration via the `settings` key.
   
   Enables code completion using racer.
 
+- **`rust.rust-analyzer`**: `object`
+
+  Default: `vim.empty_dict()`
+  
+  Settings passed down to rust-analyzer server
+
+- **`rust.rust-analyzer.path`**: `string|null`
+
+  Default: `vim.NIL`
+  
+  When specified, uses the rust-analyzer binary at a given path
+
+- **`rust.rust-analyzer.releaseTag`**: `string`
+
+  Default: `"nightly"`
+  
+  Which binary release to download and use
+
 - **`rust.rustflags`**: `string|null`
 
   Default: `vim.NIL`
@@ -3588,6 +3640,31 @@ require'nvim_lsp'.rls.setup{}
     cmd = { "rls" }
     filetypes = { "rust" }
     root_dir = root_pattern("Cargo.toml")
+```
+
+## rnix
+
+https://github.com/nix-community/rnix-lsp
+
+A language server for Nix providing basic completion and formatting via nixpkgs-fmt.
+
+To install manually, run `cargo install rnix-lsp`. If you are using nix, rnix-lsp is in nixpkgs.
+
+This server accepts configuration via the `settings` key.
+
+    
+Can be installed in Nvim with `:LspInstall rnix`
+
+```lua
+require'nvim_lsp'.rnix.setup{}
+
+  Default Values:
+    cmd = { "rnix-lsp" }
+    filetypes = { "nix" }
+    init_options = {}
+    on_new_config = <function 1>
+    root_dir = vim's starting directory
+    settings = {}
 ```
 
 ## rust_analyzer
@@ -3750,6 +3827,24 @@ This server accepts configuration via the `settings` key.
   
   Whether to show inlay type hints
 
+- **`rust-analyzer.lens.debug`**: `boolean`
+
+  Default: `true`
+
+- **`rust-analyzer.lens.enable`**: `boolean`
+
+  Default: `true`
+  
+  Whether to show CodeLens in Rust files.
+
+- **`rust-analyzer.lens.implementations`**: `boolean`
+
+  Default: `true`
+
+- **`rust-analyzer.lens.run`**: `boolean`
+
+  Default: `true`
+
 - **`rust-analyzer.lruCapacity`**: `null|integer`
 
   Default: `vim.NIL`
@@ -3870,6 +3965,7 @@ require'nvim_lsp'.rust_analyzer.setup{}
         }
       },
       workspace = {
+        applyEdit = true,
         symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,
@@ -4074,6 +4170,10 @@ Can be installed in Nvim with `:LspInstall sumneko_lua`
 This server accepts configuration via the `settings` key.
 <details><summary>Available settings:</summary>
 
+- **`Lua.color.mode`**: `enum { "Grammar", "Semantic" }`
+
+  Default: `"Semantic"`
+
 - **`Lua.completion.callSnippet`**: `enum { "Disable", "Both", "Replace" }`
 
   Default: `"Disable"`
@@ -4239,7 +4339,7 @@ require'nvim_lsp'.terraformls.setup{}
   Default Values:
     cmd = { "terraform-lsp" }
     filetypes = { "terraform" }
-    root_dir = root_pattern(".git")
+    root_dir = root_pattern(".terraform", ".git")
 ```
 
 ## texlab
@@ -4299,10 +4399,8 @@ Can be installed in Nvim with `:LspInstall tsserver`
 require'nvim_lsp'.tsserver.setup{}
 
   Default Values:
-    capabilities = default capabilities, with offsetEncoding utf-8
     cmd = { "typescript-language-server", "--stdio" }
     filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" }
-    on_init = function to handle changing offsetEncoding
     root_dir = root_pattern("package.json", "tsconfig.json", ".git")
 ```
 
@@ -4736,6 +4834,7 @@ require'nvim_lsp'.yamlls.setup{}
         }
       },
       workspace = {
+        applyEdit = true,
         symbol = {
           dynamicRegistration = false,
           hierarchicalWorkspaceSymbolSupport = true,

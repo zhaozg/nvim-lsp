@@ -107,21 +107,18 @@ configs[name] = {
       installer.configure(config)
     end;
     init_options = {
-      interpreter =
-                {
-                    properties=
-                    {
-                        InterpreterPath=vim.fn.exepath("python");
-                        Version=get_python_version();
-                    };
-                };
-      displayOptions= {};
-      analysisUpdates=true;
-      asyncStartup=true;
+      interpreter = {
+        properties =
+        {
+          InterpreterPath = vim.fn.exepath("python");
+          Version = get_python_version();
+        };
+      };
+      displayOptions = {};
+      analysisUpdates = true;
+      asyncStartup = true;
     };
   };
-  -- on_new_config = function(new_config) end;
-  -- on_attach = function(client, bufnr) end;
   docs = {
     description = [[
 https://github.com/Microsoft/python-language-server
@@ -132,6 +129,14 @@ Requires [.NET Core](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-i
 
 ```bash
 curl -L https://dot.net/v1/dotnet-install.sh | sh
+```
+
+`python-language-server` can be installed via `:LspInstall pyls_ms` or you can [build](https://github.com/microsoft/python-language-server/blob/master/CONTRIBUTING.md#setup) your own.
+
+If you want to use your own build, set cmd to point to `Microsoft.Python.languageServer.dll`.
+
+```lua
+cmd = { "dotnet", "exec", "path/to/Microsoft.Python.languageServer.dll" };
 ```
 
 This server accepts configuration via the `settings` key.
@@ -145,3 +150,4 @@ This server accepts configuration via the `settings` key.
 
 configs[name].install = installer.install
 configs[name].install_info = installer.info
+-- vim:et ts=2 sw=2
