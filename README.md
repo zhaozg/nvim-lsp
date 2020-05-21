@@ -1243,6 +1243,10 @@ This server accepts configuration via the `settings` key.
   
   Whether to enable new behaviour for code completion to include @required arguments as placeholders (when using dart.insertArgumentPlaceholders).
 
+- **`dart.previewUpdateImportsOnRename`**: `boolean`
+
+  EXPERIMENTAL: Whether to automatically update imports when moving/renaming files. Currently only works for single-file moves/renames.
+
 - **`dart.promptToGetPackages`**: `boolean`
 
   Default: `true`
