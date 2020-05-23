@@ -252,6 +252,7 @@ that config.
 - [purescriptls](#purescriptls)
 - [pyls](#pyls)
 - [pyls_ms](#pyls_ms)
+- [r_language_server](#r_language_server)
 - [rls](#rls)
 - [rnix](#rnix)
 - [rust_analyzer](#rust_analyzer)
@@ -1574,7 +1575,7 @@ https://flow.org/en/docs/install/
 See below for lsp command options.
 
 ```sh
-npm run flow lsp -- --help
+npx flow lsp --help
 ```
     
 This server accepts configuration via the `settings` key.
@@ -1680,7 +1681,7 @@ This server accepts configuration via the `settings` key.
 require'nvim_lsp'.flow.setup{}
 
   Default Values:
-    cmd = { "npm", "run", "flow", "lsp" }
+    cmd = { "npx", "--no-install", "flow", "lsp" }
     filetypes = { "javascript", "javascriptreact", "javascript.jsx" }
     root_dir = root_pattern(".flowconfig")
 ```
@@ -1786,7 +1787,7 @@ require'nvim_lsp'.gdscript.setup{}
 
   Default Values:
     cmd = { "nc", "localhost", "6008" }
-    filetypes = { "gd", "gdscript3" }
+    filetypes = { "gd", "gdscript", "gdscript3" }
     root_dir = <function 1>
 ```
 
@@ -3497,6 +3498,65 @@ require'nvim_lsp'.pyls_ms.setup{}
     }
 ```
 
+## r_language_server
+
+    [languageserver](https://github.com/REditorSupport/languageserver) is an
+    implementation of the Microsoft's Language Server Protocol for the R
+    language.
+
+    It is released on CRAN and can be easily installed by
+
+    ```R
+    install.packages("languageserver")
+    ```
+    
+This server accepts configuration via the `settings` key.
+<details><summary>Available settings:</summary>
+
+- **`r.lsp.args`**: `array`
+
+  Default: `{}`
+  
+  The command line arguments to use when launching R Language Server
+
+- **`r.lsp.debug`**: `boolean`
+
+  Debug R Language Server
+
+- **`r.lsp.diagnostics`**: `boolean`
+
+  Default: `true`
+  
+  Enable Diagnostics
+
+- **`r.lsp.lang`**: `string`
+
+  Default: `""`
+  
+  Override default LANG environment variable
+
+- **`r.lsp.path`**: `string`
+
+  Default: `""`
+  
+  Path to R binary for launching Language Server
+
+- **`r.lsp.use_stdio`**: `boolean`
+
+  Use STDIO connection instead of TCP. (Unix/macOS users only)
+
+</details>
+
+```lua
+require'nvim_lsp'.r_language_server.setup{}
+
+  Default Values:
+    cmd = { "R", "--slave", "-e", "languageserver::run()" }
+    filetypes = { "r", "rmd" }
+    log_level = 2
+    root_dir = root_pattern(".git") or os_homedir
+```
+
 ## rls
 
 https://github.com/rust-lang/rls
@@ -3904,13 +3964,13 @@ This server accepts configuration via the `settings` key.
 
   Default: `true`
   
-  Whether to show inlay type hints for method chains
+  Whether to show inlay type hints for method chains.
 
 - **`rust-analyzer.inlayHints.enable`**: `boolean`
 
   Default: `true`
   
-  Disable all inlay hints
+  Whether to show inlay hints
 
 - **`rust-analyzer.inlayHints.maxLength`**: `null|integer`
 
@@ -3922,13 +3982,13 @@ This server accepts configuration via the `settings` key.
 
   Default: `true`
   
-  Whether to show function parameter name inlay hints at the call site
+  Whether to show function parameter name inlay hints at the call site.
 
 - **`rust-analyzer.inlayHints.typeHints`**: `boolean`
 
   Default: `true`
   
-  Whether to show inlay type hints
+  Whether to show inlay type hints for variables.
 
 - **`rust-analyzer.lens.debug`**: `boolean`
 
